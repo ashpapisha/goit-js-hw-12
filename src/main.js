@@ -1,41 +1,51 @@
-import { getImagesByQuery } from "./js/pixabay-api";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
+
+import { getImagesByQuery } from "./js/pixabay-api.js";
 import {
   createGallery,
   clearGallery,
-  lightbox,
   showLoader,
   hideLoader,
   showLoadMoreButton,
   hideLoadMoreButton,
-} from "./js/render-functions";
+} from "./js/render-functions.js";
 
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
+const PER_PAGE = 15;
+const END_OF_COLLECTION_MESSAGE =
+  "We're sorry, but you've reached the end of search results.";
 
 const searchForm = document.querySelector(".search-form");
-const galleryContainer = document.querySelector(".gallery");
 const loadMoreBtn = document.querySelector(".load-more");
+const galleryContainer = document.querySelector(".gallery");
 
 let query = "";
 let page = 1;
 let totalHits = 0;
 
-hideLoadMoreButton();
+const scrollToNewImages = () => {
+  const { height: cardHeight } =
+    galleryContainer.firstElementChild.getBoundingClientRect();
 
-searchForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  query = event.currentTarget.elements.searchQuery.value.trim();
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+  });
+};
 
-  if (!query) {
-    iziToast.error({
-      message: "Будь ласка, введіть пошуковий запит!",
-      position: "topRight",
-    });
-    return;
-  }
+const showEndOfCollection = () => {
+  hideLoadMoreButton();
+  iziToast.info({
+    message: END_OF_COLLECTION_MESSAGE,
+    position: "topRight",
+  });
+};
 
+const handleSubmit = async searchQuery => {
+  query = searchQuery;
   page = 1;
-  clearGallery(galleryContainer);
+
+  clearGallery();
   hideLoadMoreButton();
   showLoader();
 
@@ -52,62 +62,67 @@ searchForm.addEventListener("submit", async (event) => {
       return;
     }
 
-    galleryContainer.innerHTML = createGallery(data.hits);
-    lightbox.refresh();
+    createGallery(data.hits);
 
-    if (page * 15 < totalHits) {
+    if (page * PER_PAGE < totalHits) {
       showLoadMoreButton();
     } else {
-      iziToast.info({
-        message: "We're sorry, but you've reached the end of search results.",
-        position: "topRight",
-      });
+      showEndOfCollection();
     }
-  } catch (error) {
-    console.error(error);
+  } catch {
     iziToast.error({
-      message: "Сталася помилка при завантаженні даних.",
+      title: "Error",
+      message: "Something went wrong. Please try again!",
       position: "topRight",
     });
   } finally {
     hideLoader();
-    searchForm.reset();
   }
-});
+};
 
-loadMoreBtn.addEventListener("click", async () => {
+const handleLoadMore = async () => {
   page += 1;
+
   hideLoadMoreButton();
   showLoader();
 
   try {
     const data = await getImagesByQuery(query, page);
-    galleryContainer.insertAdjacentHTML("beforeend", createGallery(data.hits));
-    lightbox.refresh();
 
-    const { height: cardHeight } =
-      galleryContainer.firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: "smooth",
-    });
+    createGallery(data.hits);
+    scrollToNewImages();
 
-    if (page * 15 >= totalHits) {
-      hideLoadMoreButton();
-      iziToast.info({
-        message: "We're sorry, but you've reached the end of search results.",
-        position: "topRight",
-      });
+    if (page * PER_PAGE >= totalHits) {
+      showEndOfCollection();
     } else {
       showLoadMoreButton();
     }
-  } catch (error) {
-    console.error(error);
+  } catch {
     iziToast.error({
-      message: "Сталася помилка при завантаженні додаткових даних.",
+      title: "Error",
+      message: "Something went wrong. Please try again!",
       position: "topRight",
     });
   } finally {
     hideLoader();
   }
+};
+
+searchForm.addEventListener("submit", event => {
+  event.preventDefault();
+
+  const searchQuery = event.currentTarget.elements.searchQuery.value.trim();
+
+  if (searchQuery === "") {
+    iziToast.warning({
+      title: "Ops",
+      message: "Please enter a search word!",
+      position: "topRight",
+    });
+    return;
+  }
+
+  handleSubmit(searchQuery);
 });
+
+loadMoreBtn.addEventListener("click", handleLoadMore);

@@ -1,13 +1,17 @@
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+const galleryContainer = document.querySelector(".gallery");
+const loader = document.querySelector(".loader");
+const loadMoreBtn = document.querySelector(".load-more");
+
 export const lightbox = new SimpleLightbox(".gallery a", {
   captionsData: "alt",
   captionDelay: 250,
 });
 
 export function createGallery(images) {
-  return images
+  const markup = images
     .map(
       ({
         webformatURL,
@@ -20,7 +24,12 @@ export function createGallery(images) {
       }) => `
         <li class="gallery-item">
           <a class="gallery-link" href="${largeImageURL}">
-            <img class="gallery-image" src="${webformatURL}" alt="${tags}" />
+            <img
+              class="gallery-image"
+              src="${webformatURL}"
+              alt="${tags}"
+              loading="lazy"
+            />
           </a>
           <div class="info">
             <p class="info-item"><b>Likes</b>${likes}</p>
@@ -32,14 +41,14 @@ export function createGallery(images) {
       `,
     )
     .join("");
+
+  galleryContainer.insertAdjacentHTML("beforeend", markup);
+  lightbox.refresh();
 }
 
-export function clearGallery(container) {
-  container.innerHTML = "";
+export function clearGallery() {
+  galleryContainer.innerHTML = "";
 }
-
-const loader = document.querySelector(".loader");
-const loadMoreBtn = document.querySelector(".load-more");
 
 export function showLoader() {
   loader?.classList.remove("is-hidden");
