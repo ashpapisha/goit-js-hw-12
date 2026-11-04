@@ -1,4 +1,4 @@
-import { getImagesByQuery } from "./pixabay-api";
+import { getImagesByQuery } from "./js/pixabay-api";
 import {
   createGallery,
   clearGallery,
@@ -7,7 +7,7 @@ import {
   hideLoader,
   showLoadMoreButton,
   hideLoadMoreButton,
-} from "./render-functions";
+} from "./js/render-functions";
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
