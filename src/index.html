@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Homework 12 - Async/Await & Pagination</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <!-- Форма пошуку -->
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- Контейнер галереї -->
+    <ul class="gallery"></ul>
+
+    <!-- Лоадер (індикатор завантаження) -->
+    <span class="loader is-hidden"></span>
+
+    <!-- Кнопка пагінації -->
+    <button type="button" class="load-more is-hidden">Load more</button>
+
+    <!-- Підключення головного скрипта -->
+    <script type="module" href="./js/main.js" src="./js/main.js"></script>
+  </body>
+</html>
