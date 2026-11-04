@@ -15,7 +15,7 @@ const PER_PAGE = 15;
 const END_OF_COLLECTION_MESSAGE =
   "We're sorry, but you've reached the end of search results.";
 
-const searchForm = document.querySelector(".search-form");
+const searchForm = document.querySelector(".form");
 const loadMoreBtn = document.querySelector(".load-more");
 const galleryContainer = document.querySelector(".gallery");
 

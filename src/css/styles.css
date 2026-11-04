@@ -8,14 +8,14 @@ body {
   color: #212121;
 }
 
-.search-form {
+.form {
   display: flex;
   justify-content: center;
   gap: 8px;
   margin-bottom: 24px;
 }
 
-.search-form input {
+.form input {
   padding: 8px 12px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -25,11 +25,11 @@ body {
   transition: border-color 0.25s;
 }
 
-.search-form input:focus {
+.form input:focus {
   border-color: #4e75ff;
 }
 
-.search-form button {
+.form button {
   padding: 8px 16px;
   font-size: 16px;
   font-weight: 500;
@@ -41,7 +41,7 @@ body {
   transition: background-color 0.25s;
 }
 
-.search-form button:hover {
+.form button:hover {
   background-color: #6c8cff;
 }
 
